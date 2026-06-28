@@ -76,8 +76,8 @@
         <img src="images/original-loaf.png" alt="The Original Loaf - Classic Banana Bread" class="product-img">
         <h3>The Original Loaf</h3>
         <p class="product-desc">Classic Banana Bread &mdash; our signature recipe, moist and full of real banana flavor.</p>
-        <!-- PRICE PLACEHOLDER: replace $__ with your actual price -->
-        <p class="product-price">$__</p>
+        <!-- PRICE: also update PRICES in js/script.js so the order total stays correct -->
+        <p class="product-price">$14</p>
         <a href="#order" class="btn btn-secondary">Order Now</a>
       </div>
 
@@ -87,8 +87,8 @@
         <img src="images/chocolate-chip-loaf.png" alt="Chocolate Chip Banana Bread" class="product-img">
         <h3>Chocolate Chip Banana Bread</h3>
         <p class="product-desc">A sweet twist on the classic, loaded with melty chocolate chips in every slice.</p>
-        <!-- PRICE PLACEHOLDER -->
-        <p class="product-price">$__</p>
+        <!-- PRICE: also update PRICES in js/script.js so the order total stays correct -->
+        <p class="product-price">$15</p>
         <a href="#order" class="btn btn-secondary">Order Now</a>
       </div>
 
@@ -98,8 +98,8 @@
         <img src="images/walnut-loaf.png" alt="Walnut Banana Bread" class="product-img">
         <h3>Walnut Banana Bread</h3>
         <p class="product-desc">Crunchy toasted walnuts baked right in for a warm, nutty bite.</p>
-        <!-- PRICE PLACEHOLDER -->
-        <p class="product-price">$__</p>
+        <!-- PRICE: also update PRICES in js/script.js so the order total stays correct -->
+        <p class="product-price">$16</p>
         <a href="#order" class="btn btn-secondary">Order Now</a>
       </div>
 
@@ -168,12 +168,6 @@
     <!-- EDIT: change pickup days/note here if your schedule ever changes -->
     <p class="order-note">Pickup only &mdash; available in Provo, Utah. No delivery.<br>Pre-order only &mdash; pickup available Fridays and Saturdays.</p>
 
-    <!-- QR CODE: scan to jump straight to this form. To regenerate (e.g. after changing domains), recreate images/order-qr-code.png pointing at your live site's #order URL. -->
-    <div class="order-qr">
-      <img src="images/order-qr-code.png" alt="QR code linking to the order form" class="order-qr-img">
-      <p>Scan to order</p>
-    </div>
-
     <!--
       FORM SETUP NOTES:
       - This form currently shows an on-page confirmation message via js/script.js
@@ -196,17 +190,18 @@
       <!--
         ORDER ITEMS: lets a customer order more than one type of loaf at
         different quantities in a single order. js/script.js adds/removes
-        rows and renames the select/input fields (product_1, quantity_1,
-        product_2, quantity_2, etc.) so every item reaches Formspree.
+        rows, renames the select/input fields (product_1, quantity_1,
+        product_2, quantity_2, etc.) so every item reaches Formspree, and
+        recalculates the live total below using the PRICES map in script.js.
       -->
       <label>Your Loaves</label>
       <div id="order-items">
         <div class="order-item">
           <select name="product_1" class="item-product" required>
             <option value="" disabled selected>Select a loaf</option>
-            <option value="The Original Loaf">The Original Loaf - Classic Banana Bread</option>
-            <option value="Chocolate Chip Banana Bread">Chocolate Chip Banana Bread</option>
-            <option value="Walnut Banana Bread">Walnut Banana Bread</option>
+            <option value="The Original Loaf">The Original Loaf - $14</option>
+            <option value="Chocolate Chip Banana Bread">Chocolate Chip Banana Bread - $15</option>
+            <option value="Walnut Banana Bread">Walnut Banana Bread - $16</option>
           </select>
           <input type="number" name="quantity_1" class="item-quantity" min="1" value="1" required>
           <button type="button" class="remove-item-btn" hidden>&times;</button>
@@ -214,13 +209,24 @@
       </div>
       <button type="button" id="add-item-btn" class="btn btn-secondary add-item-btn">+ Add Another Loaf</button>
 
+      <!-- ORDER TOTAL: auto-calculated in js/script.js from PRICES x quantities -->
+      <p class="order-total">Estimated Total: <span id="order-total-amount">$0</span></p>
+
       <label for="pickup-date">Preferred Pickup Date</label>
-      <!-- Pickup is only available Fridays and Saturdays; enforced in js/script.js -->
-      <input type="date" id="pickup-date" name="pickup-date" required>
-      <p class="field-hint">Pickup available Fridays and Saturdays only.</p>
+      <!--
+        Pickup days/dates are generated in js/script.js (see PICKUP_SCHEDULE)
+        rather than hardcoded, so the list of upcoming Fridays/Saturdays
+        stays current automatically.
+      -->
+      <select id="pickup-date" name="pickup-date" required>
+        <option value="" disabled selected>Select a pickup date</option>
+      </select>
 
       <label for="pickup-time">Preferred Pickup Time</label>
-      <input type="time" id="pickup-time" name="pickup-time" required>
+      <!-- Options change based on the selected date's day of week; see PICKUP_SCHEDULE in js/script.js -->
+      <select id="pickup-time" name="pickup-time" required disabled>
+        <option value="" disabled selected>Select a pickup date first</option>
+      </select>
 
       <label for="notes">Notes</label>
       <textarea id="notes" name="notes" rows="3" placeholder="Allergies, special requests, etc."></textarea>
@@ -232,6 +238,12 @@
         <option value="Zelle">Zelle</option>
         <option value="Cash">Cash</option>
       </select>
+
+      <!-- VENMO QR: shown only when "Venmo" is selected above. Regenerate images/venmo-qr.png if your Venmo handle ever changes. -->
+      <div id="venmo-qr-block" class="venmo-qr-block" hidden>
+        <img src="images/venmo-qr.png" alt="Venmo QR code for Danielle Paje" class="venmo-qr-img">
+        <p>Scan with the Venmo app to pay <strong>@Danielle-Paje</strong></p>
+      </div>
 
       <button type="submit" class="btn btn-primary">Place My Order</button>
 

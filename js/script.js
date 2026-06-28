@@ -20,12 +20,32 @@ mainNav.querySelectorAll('a').forEach(function (link) {
   });
 });
 
-// Order form handling
+// ===== PRICES =====
+// Update these if your prices change. Keep keys matching the <option value="">
+// text exactly in index.html's loaf <select> options.
+const PRICES = {
+  'The Original Loaf': 14,
+  'Chocolate Chip Banana Bread': 15,
+  'Walnut Banana Bread': 16
+};
+
+// ===== PICKUP SCHEDULE =====
+// Edit the time-slot lists here if pickup hours ever change.
+const PICKUP_TIMES = {
+  5: ['6:00 PM - 8:00 PM'], // Friday
+  6: ['10:00 AM - 2:00 PM', '4:00 PM', '6:00 PM', '8:00 PM'] // Saturday
+};
+const HOW_MANY_WEEKS_AHEAD = 3; // how many upcoming Fri/Sat dates to list
+
 const orderForm = document.getElementById('order-form');
 const confirmation = document.getElementById('form-confirmation');
 const orderItems = document.getElementById('order-items');
 const addItemBtn = document.getElementById('add-item-btn');
-const pickupDateInput = document.getElementById('pickup-date');
+const pickupDateSelect = document.getElementById('pickup-date');
+const pickupTimeSelect = document.getElementById('pickup-time');
+const paymentMethodSelect = document.getElementById('payment-method');
+const venmoQrBlock = document.getElementById('venmo-qr-block');
+const totalAmountEl = document.getElementById('order-total-amount');
 
 // ===== Multiple loaves per order =====
 // Each row lets the customer pick a different loaf + quantity.
@@ -43,6 +63,17 @@ function renumberItems() {
   });
 }
 
+function updateTotal() {
+  let total = 0;
+  orderItems.querySelectorAll('.order-item').forEach(function (row) {
+    const product = row.querySelector('.item-product').value;
+    const qty = parseInt(row.querySelector('.item-quantity').value, 10) || 0;
+    const price = PRICES[product] || 0;
+    total += price * qty;
+  });
+  totalAmountEl.textContent = '$' + total.toFixed(2).replace(/\.00$/, '');
+}
+
 addItemBtn.addEventListener('click', function () {
   const row = document.createElement('div');
   row.className = 'order-item';
@@ -52,37 +83,111 @@ addItemBtn.addEventListener('click', function () {
     '<button type="button" class="remove-item-btn">&times;</button>';
   orderItems.appendChild(row);
   renumberItems();
+  updateTotal();
 });
 
 orderItems.addEventListener('click', function (e) {
   if (e.target.classList.contains('remove-item-btn')) {
     e.target.closest('.order-item').remove();
     renumberItems();
+    updateTotal();
   }
 });
 
-// ===== Pickup is Fridays and Saturdays only =====
-pickupDateInput.addEventListener('input', function () {
-  if (!pickupDateInput.value) {
-    pickupDateInput.setCustomValidity('');
+orderItems.addEventListener('change', function (e) {
+  if (e.target.classList.contains('item-product') || e.target.classList.contains('item-quantity')) {
+    updateTotal();
+  }
+});
+orderItems.addEventListener('input', function (e) {
+  if (e.target.classList.contains('item-quantity')) {
+    updateTotal();
+  }
+});
+
+// ===== Pickup date options: next few upcoming Fridays and Saturdays =====
+function formatDateLabel(date) {
+  const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+  const monthDay = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  return dayName + ', ' + monthDay;
+}
+
+function toIsoDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + d;
+}
+
+function buildPickupDateOptions() {
+  const upcoming = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < 7 * HOW_MANY_WEEKS_AHEAD; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const day = d.getDay(); // 5 = Friday, 6 = Saturday
+    if (day === 5 || day === 6) {
+      upcoming.push(d);
+    }
+  }
+
+  upcoming.forEach(function (date) {
+    const option = document.createElement('option');
+    option.value = toIsoDate(date);
+    option.dataset.day = date.getDay();
+    option.textContent = formatDateLabel(date);
+    pickupDateSelect.appendChild(option);
+  });
+}
+
+function updatePickupTimeOptions() {
+  const selected = pickupDateSelect.selectedOptions[0];
+  pickupTimeSelect.innerHTML = '';
+
+  if (!selected || !selected.dataset.day) {
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.textContent = 'Select a pickup date first';
+    pickupTimeSelect.appendChild(placeholder);
+    pickupTimeSelect.disabled = true;
     return;
   }
-  // Parse as local date (avoid UTC off-by-one from "YYYY-MM-DD" parsing)
-  const parts = pickupDateInput.value.split('-').map(Number);
-  const day = new Date(parts[0], parts[1] - 1, parts[2]).getDay(); // 0=Sun ... 6=Sat
-  if (day === 5 || day === 6) {
-    pickupDateInput.setCustomValidity('');
-  } else {
-    pickupDateInput.setCustomValidity('Pickup is only available on Fridays and Saturdays. Please choose one of those days.');
-  }
+
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  placeholder.textContent = 'Select a pickup time';
+  pickupTimeSelect.appendChild(placeholder);
+
+  const times = PICKUP_TIMES[Number(selected.dataset.day)] || [];
+  times.forEach(function (time) {
+    const option = document.createElement('option');
+    option.value = time;
+    option.textContent = time;
+    pickupTimeSelect.appendChild(option);
+  });
+
+  pickupTimeSelect.disabled = false;
+}
+
+pickupDateSelect.addEventListener('change', updatePickupTimeOptions);
+buildPickupDateOptions();
+
+// ===== Venmo QR: show only when Venmo is the selected payment method =====
+paymentMethodSelect.addEventListener('change', function () {
+  venmoQrBlock.hidden = paymentMethodSelect.value !== 'Venmo';
 });
 
+// ===== Order form submission =====
 orderForm.addEventListener('submit', function (e) {
   // Submits to Formspree (see action= on the form tag) via fetch so we can
   // show the confirmation message without leaving the page.
   e.preventDefault();
-
-  pickupDateInput.dispatchEvent(new Event('input'));
 
   if (!orderForm.checkValidity()) {
     orderForm.reportValidity();
@@ -103,6 +208,9 @@ orderForm.addEventListener('submit', function (e) {
           if (index > 0) row.remove();
         });
         renumberItems();
+        updateTotal();
+        updatePickupTimeOptions();
+        venmoQrBlock.hidden = true;
         confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         alert('Something went wrong submitting your order. Please try again or reach out directly.');

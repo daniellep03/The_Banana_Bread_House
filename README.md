@@ -20,13 +20,13 @@ banana-bread-house/
 ```
 
 ### Where to edit things
-- **Prices:** in `index.html`, search for `PRICE PLACEHOLDER` — three spots, one per product card. Replace `$__` with your real price.
+- **Prices:** update in TWO places so they stay in sync — the `$14`/`$15`/`$16` text on each product card in `index.html`, AND the `PRICES` object near the top of `js/script.js` (this second one is what calculates the live order total, so the math will be wrong if you only update the card).
 - **Images:** drop your photos into the `images/` folder using the exact filenames above (or update the `src=` paths in `index.html` if you rename them).
 - **Text/copy:** look for `EDIT TEXT` comments in `index.html` (currently the Our Story section).
 - **Colors:** all colors are defined once at the top of `css/style.css` under `:root` (`--color-yellow`, `--color-brown`, `--color-cream`, `--color-blue-accent`). Change them there and the whole site updates.
 - **Payment info / footer:** the footer in `index.html` has an `EDIT` comment where you can add specific Venmo/Zelle handles if you want them displayed publicly.
-- **Pickup days:** currently locked to Fridays and Saturdays only, enforced in `js/script.js` (search for "Fridays and Saturdays"). The note text is in `index.html` near `.order-note`. Update both if your schedule changes.
-- **QR code:** `images/order-qr-code.png` links to your live site's `#order` section. If you ever change domains, regenerate it (any free QR generator) pointed at the new URL and replace the file.
+- **Venmo QR code:** `images/venmo-qr.png` is generated from your Venmo profile link and shown automatically when a customer selects "Venmo" as their payment method. If your Venmo handle ever changes, regenerate this QR code (any free QR generator) pointed at your new Venmo profile URL and replace the file.
+- **Pickup days/times:** currently Fridays (6–8 PM) and Saturdays (10 AM–2 PM, then 4, 6, and 8 PM slots). These are generated automatically in `js/script.js` — search for `PICKUP_TIMES` to change the time slots, or `HOW_MANY_WEEKS_AHEAD` to change how many upcoming dates are listed. The note text near the top of the order form (`.order-note` in `index.html`) should be updated too if your days ever change.
 
 ## 2. Netlify Deployment Steps
 

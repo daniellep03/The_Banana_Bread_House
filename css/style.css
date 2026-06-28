@@ -328,22 +328,6 @@ section {
   opacity: 0.8;
 }
 
-.order-qr {
-  margin: 24px auto 0;
-}
-
-.order-qr-img {
-  width: 160px;
-  height: 160px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-soft);
-}
-
-.order-qr p {
-  font-weight: 700;
-  margin-top: 8px;
-}
-
 .order-form {
   max-width: 520px;
   margin: 30px auto 0;
@@ -419,6 +403,40 @@ section {
   align-self: flex-start;
   padding: 10px 20px;
   font-size: 0.9rem;
+}
+
+.order-total {
+  margin-top: 18px;
+  padding: 14px 18px;
+  background-color: #fff;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.order-total span {
+  color: var(--color-brown);
+}
+
+.venmo-qr-block {
+  margin-top: 14px;
+  padding: 18px;
+  background-color: #fff;
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.venmo-qr-img {
+  width: 160px;
+  height: 160px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.venmo-qr-block p {
+  margin: 10px 0 0;
+  font-weight: 600;
 }
 
 .field-hint {
