@@ -328,6 +328,22 @@ section {
   opacity: 0.8;
 }
 
+.order-qr {
+  margin: 24px auto 0;
+}
+
+.order-qr-img {
+  width: 160px;
+  height: 160px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.order-qr p {
+  font-weight: 700;
+  margin-top: 8px;
+}
+
 .order-form {
   max-width: 520px;
   margin: 30px auto 0;
@@ -367,6 +383,49 @@ section {
 .order-form button {
   margin-top: 26px;
   align-self: center;
+}
+
+.order-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.order-item .item-product {
+  flex: 2;
+}
+
+.order-item .item-quantity {
+  flex: 1;
+  min-width: 70px;
+}
+
+.remove-item-btn {
+  background-color: transparent;
+  border: 1px solid rgba(107, 62, 38, 0.3);
+  color: var(--color-brown);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.add-item-btn {
+  margin-top: 6px;
+  align-self: flex-start;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+.field-hint {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-brown);
+  opacity: 0.7;
 }
 
 .form-confirmation {

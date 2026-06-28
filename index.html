@@ -165,7 +165,14 @@
 <section id="order" class="order">
   <div class="container">
     <h2>Place Your Order</h2>
-    <p class="order-note">Pickup only &mdash; available in Provo, Utah. No delivery.</p>
+    <!-- EDIT: change pickup days/note here if your schedule ever changes -->
+    <p class="order-note">Pickup only &mdash; available in Provo, Utah. No delivery.<br>Pre-order only &mdash; pickup available Fridays and Saturdays.</p>
+
+    <!-- QR CODE: scan to jump straight to this form. To regenerate (e.g. after changing domains), recreate images/order-qr-code.png pointing at your live site's #order URL. -->
+    <div class="order-qr">
+      <img src="images/order-qr-code.png" alt="QR code linking to the order form" class="order-qr-img">
+      <p>Scan to order</p>
+    </div>
 
     <!--
       FORM SETUP NOTES:
@@ -186,19 +193,31 @@
       <label for="phone">Phone Number</label>
       <input type="tel" id="phone" name="phone" required>
 
-      <label for="product">Product Selection</label>
-      <select id="product" name="product" required>
-        <option value="" disabled selected>Select a loaf</option>
-        <option value="The Original Loaf">The Original Loaf - Classic Banana Bread</option>
-        <option value="Chocolate Chip Banana Bread">Chocolate Chip Banana Bread</option>
-        <option value="Walnut Banana Bread">Walnut Banana Bread</option>
-      </select>
-
-      <label for="quantity">Quantity</label>
-      <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+      <!--
+        ORDER ITEMS: lets a customer order more than one type of loaf at
+        different quantities in a single order. js/script.js adds/removes
+        rows and renames the select/input fields (product_1, quantity_1,
+        product_2, quantity_2, etc.) so every item reaches Formspree.
+      -->
+      <label>Your Loaves</label>
+      <div id="order-items">
+        <div class="order-item">
+          <select name="product_1" class="item-product" required>
+            <option value="" disabled selected>Select a loaf</option>
+            <option value="The Original Loaf">The Original Loaf - Classic Banana Bread</option>
+            <option value="Chocolate Chip Banana Bread">Chocolate Chip Banana Bread</option>
+            <option value="Walnut Banana Bread">Walnut Banana Bread</option>
+          </select>
+          <input type="number" name="quantity_1" class="item-quantity" min="1" value="1" required>
+          <button type="button" class="remove-item-btn" hidden>&times;</button>
+        </div>
+      </div>
+      <button type="button" id="add-item-btn" class="btn btn-secondary add-item-btn">+ Add Another Loaf</button>
 
       <label for="pickup-date">Preferred Pickup Date</label>
+      <!-- Pickup is only available Fridays and Saturdays; enforced in js/script.js -->
       <input type="date" id="pickup-date" name="pickup-date" required>
+      <p class="field-hint">Pickup available Fridays and Saturdays only.</p>
 
       <label for="pickup-time">Preferred Pickup Time</label>
       <input type="time" id="pickup-time" name="pickup-time" required>

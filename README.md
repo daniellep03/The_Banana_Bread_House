@@ -25,6 +25,8 @@ banana-bread-house/
 - **Text/copy:** look for `EDIT TEXT` comments in `index.html` (currently the Our Story section).
 - **Colors:** all colors are defined once at the top of `css/style.css` under `:root` (`--color-yellow`, `--color-brown`, `--color-cream`, `--color-blue-accent`). Change them there and the whole site updates.
 - **Payment info / footer:** the footer in `index.html` has an `EDIT` comment where you can add specific Venmo/Zelle handles if you want them displayed publicly.
+- **Pickup days:** currently locked to Fridays and Saturdays only, enforced in `js/script.js` (search for "Fridays and Saturdays"). The note text is in `index.html` near `.order-note`. Update both if your schedule changes.
+- **QR code:** `images/order-qr-code.png` links to your live site's `#order` section. If you ever change domains, regenerate it (any free QR generator) pointed at the new URL and replace the file.
 
 ## 2. Netlify Deployment Steps
 
