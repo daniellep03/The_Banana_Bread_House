@@ -1,0 +1,29 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#FFF8F0"/>
+  <ellipse cx="200" cy="240" rx="160" ry="22" fill="#8EC5E9" opacity="0.18"/>
+
+  <!-- plate -->
+  <ellipse cx="200" cy="225" rx="150" ry="24" fill="#FFFFFF" stroke="#E8DCCB" stroke-width="3"/>
+
+  <!-- loaf -->
+  <ellipse cx="200" cy="185" rx="125" ry="68" fill="#6B3E26"/>
+  <path d="M80 185 Q200 80 320 185 Q320 140 200 125 Q80 140 80 185 Z" fill="#8B5A33"/>
+  <path d="M100 178 Q200 95 300 178 Q300 148 200 138 Q100 148 100 178 Z" fill="#A8703F"/>
+
+  <!-- chocolate chips scattered -->
+  <g fill="#3A2317">
+    <circle cx="150" cy="150" r="6"/>
+    <circle cx="175" cy="135" r="5"/>
+    <circle cx="200" cy="148" r="6"/>
+    <circle cx="225" cy="133" r="5"/>
+    <circle cx="250" cy="150" r="6"/>
+    <circle cx="165" cy="165" r="4"/>
+    <circle cx="210" cy="170" r="5"/>
+    <circle cx="240" cy="165" r="4"/>
+    <circle cx="190" cy="120" r="4"/>
+  </g>
+
+  <!-- steam -->
+  <path d="M160 95 Q152 75 165 60" stroke="#FFD54F" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M240 95 Q248 75 235 60" stroke="#FFD54F" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+</svg>
