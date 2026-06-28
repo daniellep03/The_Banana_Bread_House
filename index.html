@@ -170,7 +170,8 @@
       - To receive orders by email or in a Google Sheet, see README.md for
         free setup options (Formspree, Netlify Forms, or Google Sheets).
     -->
-    <form id="order-form" class="order-form" novalidate>
+    <!-- Connected to Formspree: submissions email to thebananabreadh@gmail.com -->
+    <form id="order-form" class="order-form" action="https://formspree.io/f/xdarzqwq" method="POST" novalidate>
 
       <label for="name">Name</label>
       <input type="text" id="name" name="name" required>

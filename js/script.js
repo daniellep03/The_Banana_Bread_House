@@ -25,17 +25,8 @@ const orderForm = document.getElementById('order-form');
 const confirmation = document.getElementById('form-confirmation');
 
 orderForm.addEventListener('submit', function (e) {
-  // NOTE: This currently just shows a confirmation message on the page.
-  // It does NOT send the order anywhere yet.
-  //
-  // To make this form actually deliver orders to your email or a
-  // Google Sheet, see README.md for two free options:
-  //   1. Formspree (easiest — sends to your email)
-  //   2. Netlify Forms (built in, no signup)
-  //   3. Google Sheets via a Google Apps Script web app
-  //
-  // If you set up Formspree or Netlify Forms instead, remove the
-  // preventDefault() below and let the form submit normally to that service.
+  // Submits to Formspree (see action= on the form tag) via fetch so we can
+  // show the confirmation message without leaving the page.
   e.preventDefault();
 
   if (!orderForm.checkValidity()) {
@@ -43,7 +34,21 @@ orderForm.addEventListener('submit', function (e) {
     return;
   }
 
-  confirmation.hidden = false;
-  orderForm.reset();
-  confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  fetch(orderForm.action, {
+    method: 'POST',
+    body: new FormData(orderForm),
+    headers: { Accept: 'application/json' }
+  })
+    .then(function (response) {
+      if (response.ok) {
+        confirmation.hidden = false;
+        orderForm.reset();
+        confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        alert('Something went wrong submitting your order. Please try again or reach out directly.');
+      }
+    })
+    .catch(function () {
+      alert('Something went wrong submitting your order. Please try again or reach out directly.');
+    });
 });
