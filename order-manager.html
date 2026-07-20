@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Manager · The Banana Bread House</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="../images/logo.png">
+<style>
+  :root {
+    --yellow: #FFD54F;
+    --brown: #6B3E26;
+    --cream: #FFF8F0;
+    --blue: #8EC5E9;
+    --green: #4CAF7D;
+    --radius: 16px;
+    --shadow: 0 8px 24px rgba(107, 62, 38, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cream);
+    color: var(--brown);
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  header {
+    background: var(--brown);
+    color: var(--cream);
+    padding: 18px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 { margin: 0; font-size: 1.15rem; }
+  header p { margin: 4px 0 0; font-size: 0.8rem; opacity: 0.8; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 18px; }
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  label { display: block; font-weight: 700; font-size: 0.82rem; margin: 12px 0 4px; }
+  input, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid rgba(107, 62, 38, 0.25);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--brown);
+    background: #fff;
+  }
+  input:focus, textarea:focus { outline: 2px solid var(--blue); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; }
+  .stage {
+    border-left: 5px solid var(--yellow);
+  }
+  .stage.baking { border-left-color: #F5793B; }
+  .stage.ready { border-left-color: var(--green); }
+  .stage .emoji { font-size: 1.2rem; }
+  .btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    padding: 13px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-text { background: var(--blue); color: #fff; }
+  .btn-email { background: var(--yellow); color: var(--brown); }
+  .btn-copy { background: #efe7dc; color: var(--brown); flex: 0 0 auto; min-width: 0; padding: 13px 16px; }
+  .btn:active { transform: scale(0.98); }
+  .hint { font-size: 0.78rem; opacity: 0.7; margin: 10px 0 0; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--brown);
+    color: var(--cream);
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.25s ease;
+    z-index: 50;
+    box-shadow: var(--shadow);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍌 Order Manager</h1>
+  <p>Private tool · The Banana Bread House</p>
+</header>
+
+<div class="wrap">
+
+  <!-- Customer details -->
+  <div class="card">
+    <h2>1 · Customer details</h2>
+    <p class="hint" style="margin-top:0">Copy these from the order email, then use the buttons below. Nothing is saved — it clears when you close the page.</p>
+    <label for="name">Customer name</label>
+    <input type="text" id="name" placeholder="e.g. Sarah" autocomplete="off">
+    <div class="row">
+      <div>
+        <label for="phone">Phone (for texts)</label>
+        <input type="tel" id="phone" placeholder="801-555-1234" autocomplete="off">
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="name@email.com" autocomplete="off">
+      </div>
+    </div>
+    <label for="pickup">Pickup date &amp; time</label>
+    <input type="text" id="pickup" placeholder="e.g. Saturday, July 25 · 10 AM–2 PM" autocomplete="off">
+  </div>
+
+  <!-- Stage 1: Received -->
+  <div class="card stage">
+    <h2><span class="emoji">✅</span> 2 · Order received</h2>
+    <textarea id="msg-received" data-stage="received"></textarea>
+    <div class="btn-row">
+      <a class="btn btn-text" data-send="text" data-stage="received">💬 Send Text</a>
+      <a class="btn btn-email" data-send="email" data-stage="received">✉️ Send Email</a>
+      <button class="btn btn-copy" data-copy="received">Copy</button>
+    </div>
+  </div>
+
+  <!-- Stage 2: Baking -->
+  <div class="card stage baking">
+    <h2><span class="emoji">🔥</span> 3 · Baking now</h2>
+    <textarea id="msg-baking" data-stage="baking"></textarea>
+    <div class="btn-row">
+      <a class="btn btn-text" data-send="text" data-stage="baking">💬 Send Text</a>
+      <a class="btn btn-email" data-send="email" data-stage="baking">✉️ Send Email</a>
+      <button class="btn btn-copy" data-copy="baking">Copy</button>
+    </div>
+  </div>
+
+  <!-- Stage 3: Ready -->
+  <div class="card stage ready">
+    <h2><span class="emoji">🎉</span> 4 · Ready for pickup</h2>
+    <textarea id="msg-ready" data-stage="ready"></textarea>
+    <div class="btn-row">
+      <a class="btn btn-text" data-send="text" data-stage="ready">💬 Send Text</a>
+      <a class="btn btn-email" data-send="email" data-stage="ready">✉️ Send Email</a>
+      <button class="btn btn-copy" data-copy="ready">Copy</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+  var nameEl = document.getElementById('name');
+  var phoneEl = document.getElementById('phone');
+  var emailEl = document.getElementById('email');
+  var pickupEl = document.getElementById('pickup');
+
+  // Message templates. {name} and {pickup} get filled in automatically.
+  var TEMPLATES = {
+    received:
+      "Hi {name}! 🍌 This is The Banana Bread House. We've received your order — thank you so much! " +
+      "We'll send you an update when we start baking. 💛",
+    baking:
+      "Hi {name}! 🔥 Great news — your banana bread is in the oven and baking fresh right now. " +
+      "We'll let you know the moment it's ready for pickup! 🍌",
+    ready:
+      "Hi {name}! 🎉 Your banana bread is baked, cooled, and ready for pickup! " +
+      "Pickup: {pickup}. See you soon, and thank you for supporting The Banana Bread House! 💛"
+  };
+
+  var SUBJECTS = {
+    received: "We got your order! 🍌 — The Banana Bread House",
+    baking: "Your banana bread is baking! 🔥 — The Banana Bread House",
+    ready: "Your banana bread is ready for pickup! 🎉 — The Banana Bread House"
+  };
+
+  var textareas = {
+    received: document.getElementById('msg-received'),
+    baking: document.getElementById('msg-baking'),
+    ready: document.getElementById('msg-ready')
+  };
+
+  // Tracks whether the baker manually edited a message, so we don't overwrite it.
+  var edited = { received: false, baking: false, ready: false };
+
+  function fill(tpl) {
+    var name = nameEl.value.trim() || 'there';
+    var pickup = pickupEl.value.trim() || 'your scheduled time';
+    return tpl.replace(/\{name\}/g, name).replace(/\{pickup\}/g, pickup);
+  }
+
+  function refresh() {
+    Object.keys(TEMPLATES).forEach(function (stage) {
+      if (!edited[stage]) {
+        textareas[stage].value = fill(TEMPLATES[stage]);
+      }
+    });
+  }
+
+  [nameEl, pickupEl].forEach(function (el) {
+    el.addEventListener('input', refresh);
+  });
+
+  Object.keys(textareas).forEach(function (stage) {
+    textareas[stage].addEventListener('input', function () { edited[stage] = true; });
+  });
+
+  function toast(text) {
+    var t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 1600);
+  }
+
+  // Copy buttons
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var stage = btn.getAttribute('data-copy');
+      var text = textareas[stage].value;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () { toast('Message copied!'); });
+      } else {
+        textareas[stage].select();
+        document.execCommand('copy');
+        toast('Message copied!');
+      }
+    });
+  });
+
+  // Send Text / Send Email buttons
+  document.querySelectorAll('[data-send]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      var stage = btn.getAttribute('data-stage');
+      var mode = btn.getAttribute('data-send');
+      var body = textareas[stage].value;
+
+      if (mode === 'text') {
+        var phone = phoneEl.value.replace(/[^\d+]/g, '');
+        if (!phone) { e.preventDefault(); toast('Add a phone number first'); return; }
+        // iOS-friendly SMS link with prefilled body
+        btn.href = 'sms:' + phone + '?&body=' + encodeURIComponent(body);
+      } else {
+        var email = emailEl.value.trim();
+        if (!email) { e.preventDefault(); toast('Add an email first'); return; }
+        btn.href = 'mailto:' + encodeURIComponent(email) +
+                   '?subject=' + encodeURIComponent(SUBJECTS[stage]) +
+                   '&body=' + encodeURIComponent(body);
+      }
+    });
+  });
+
+  refresh();
+</script>
+
+</body>
+</html>
