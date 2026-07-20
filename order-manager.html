@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Manager · The Banana Bread House</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/png" href="../images/logo.png">
+<link rel="icon" type="image/png" href="images/logo.png">
 <style>
   :root {
     --yellow: #FFD54F;
@@ -71,6 +71,7 @@
   }
   .stage.baking { border-left-color: #F5793B; }
   .stage.ready { border-left-color: var(--green); }
+  .stage.review { border-left-color: #E4B429; }
   .stage .emoji { font-size: 1.2rem; }
   .btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
   .btn {
@@ -174,6 +175,17 @@
     </div>
   </div>
 
+  <!-- Stage 4: Thank you + review -->
+  <div class="card stage review">
+    <h2><span class="emoji">🌟</span> 5 · Thank you &amp; review</h2>
+    <textarea id="msg-review" data-stage="review"></textarea>
+    <div class="btn-row">
+      <a class="btn btn-text" data-send="text" data-stage="review">💬 Send Text</a>
+      <a class="btn btn-email" data-send="email" data-stage="review">✉️ Send Email</a>
+      <button class="btn btn-copy" data-copy="review">Copy</button>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast">Copied!</div>
@@ -194,23 +206,29 @@
       "We'll let you know the moment it's ready for pickup! 🍌",
     ready:
       "Hi {name}! 🎉 Your banana bread is baked, cooled, and ready for pickup! " +
-      "Pickup: {pickup}. See you soon, and thank you for supporting The Banana Bread House! 💛"
+      "Pickup: {pickup}. See you soon, and thank you for supporting The Banana Bread House! 💛",
+    review:
+      "Hi {name}! 🌟 Thank you so much for your order — we hope you loved every bite! " +
+      "If you have a moment, we'd be so grateful for a quick review: " +
+      "https://the-banana-bread-house.netlify.app/review.html 💛"
   };
 
   var SUBJECTS = {
     received: "We got your order! 🍌 — The Banana Bread House",
     baking: "Your banana bread is baking! 🔥 — The Banana Bread House",
-    ready: "Your banana bread is ready for pickup! 🎉 — The Banana Bread House"
+    ready: "Your banana bread is ready for pickup! 🎉 — The Banana Bread House",
+    review: "Thank you from The Banana Bread House! 🌟"
   };
 
   var textareas = {
     received: document.getElementById('msg-received'),
     baking: document.getElementById('msg-baking'),
-    ready: document.getElementById('msg-ready')
+    ready: document.getElementById('msg-ready'),
+    review: document.getElementById('msg-review')
   };
 
   // Tracks whether the baker manually edited a message, so we don't overwrite it.
-  var edited = { received: false, baking: false, ready: false };
+  var edited = { received: false, baking: false, ready: false, review: false };
 
   function fill(tpl) {
     var name = nameEl.value.trim() || 'there';
